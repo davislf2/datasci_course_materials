@@ -1,0 +1,153 @@
+frequency(docid, term, count)
+
+(a)
+σdocid=10398_txt_earn(frequency)
+
+SELECT DISTINCT COUNT (*) FROM frequency
+  WHERE docid="10398_txt_earn";
+
+138
+
+(b)
+πterm(σdocid=10398_txt_earn and count=1(frequency))
+
+
+Sol1: Wrong
+SELECT COUNT(*) FROM (
+  SELECT term, COUNT(*) as c FROM frequency
+    GROUP BY term
+    HAVING docid="10398_txt_earn"
+    AND c=1
+)x;
+
+15
+
+Sol2: Correct
+SELECT COUNT(*) FROM (
+  SELECT * FROM frequency
+    WHERE docid="10398_txt_earn"
+    AND count=1
+)x;
+
+110
+
+(c)
+πterm(σdocid=10398_txt_earn and count=1(frequency)) U πterm(σdocid=925_txt_trade and count=1(frequency))
+
+Sol1: Wrong
+SELECT COUNT(*) FROM (
+  SELECT term, COUNT(*) as c FROM frequency
+    GROUP BY term
+    HAVING docid="10398_txt_earn"
+    AND c=1
+  UNION
+  SELECT term, COUNT(*) as c FROM frequency
+    GROUP BY term
+    HAVING docid="925_txt_trade"
+    AND c=1
+)x;
+
+31
+
+Sol2: Correct
+SELECT COUNT(*) FROM (
+  SELECT term FROM frequency
+    WHERE docid="10398_txt_earn"
+    AND count=1
+  UNION
+  SELECT term FROM frequency
+    WHERE docid="925_txt_trade"
+    AND count=1  
+)x;
+
+335
+
+(d) count: Write a SQL statement to count the number of unique documents containing the word "law" or containing the word "legal" (If a document contains both law and legal, it should only be counted once)
+
+Sol1: DISTINCT
+SELECT COUNT(*) FROM (
+  SELECT DISTINCT docid FROM frequency
+    WHERE term='law'
+    OR term='legal'
+)x;
+
+58
+
+Sol2: UNION
+SELECT COUNT(*) FROM (
+  SELECT docid FROM frequency
+    WHERE term='law'
+  UNION
+  SELECT docid FROM frequency
+    WHERE term='legal'
+)x;
+
+58
+
+(e) big documents Write a SQL statement to find all documents that have more than 300 total terms, including duplicate terms. (Hint: You can use the HAVING clause, or you can use a nested query. Another hint: Remember that the count column contains the term frequencies, and you want to consider duplicates.) (docid, term_count)
+
+Sol1: Not sure
+
+SELECT COUNT(*) FROM (
+  SELECT docid, sum(count) FROM frequency
+    GROUP BY docid
+    HAVING sum(count)>300
+)x;
+
+107
+
+(f) two words: Write a SQL statement to count the number of unique documents that contain both the word 'transactions' and the word 'world'. (Hint: Find the docs that contain one word and the docs that contain the other word separately, then find the intersection.)
+
+SELECT COUNT(*) FROM (
+  SELECT docid FROM frequency
+    WHERE term='transactions'
+  INTERSECT
+  SELECT docid FROM frequency
+    WHERE term='world'
+)x;
+
+3
+
+(g) multiply: Express A X B as a SQL query, referring to the class lecture for hints.
+
+What to turn in: Save the value of cell (2,3) in a file part_g.txt and upload the file as your answer. The file should only contain the value of the cell at position (2,3).
+
+SELECT SUM(A.value*B.value) FROM A JOIN B 
+  ON A.row_num+1 = B.col_num
+  AND A.col_num = B.row_num
+  WHERE A.row_num=2
+
+2874
+
+(h) What to turn in: Create a file part_h.txt containing the similarity value of the two documents '10080_txt_crude' and '17035_txt_earn'. Upload this file as your answer.
+
+
+CREATE VIEW Doc1 AS
+SELECT * FROM frequency
+WHERE docid='10080_txt_crude'
+
+CREATE VIEW Doc2 AS
+SELECT * FROM frequency
+WHERE docid='17035_txt_earn'
+
+SELECT SUM(Doc1.count*Doc2.count) FROM Doc1 JOIN Doc2
+ON Doc1.term=Doc2.term
+
+19
+
+(i) keyword search: Find the best matching document to the keyword query "washington taxes treasury". You can add this set of keywords to the document corpus with a union of scalar queries:
+
+CREATE VIEW Q AS
+SELECT 'q' as docid, 'washington' as term, 1 as count 
+UNION
+SELECT 'q' as docid, 'taxes' as term, 1 as count
+UNION 
+SELECT 'q' as docid, 'treasury' as term, 1 as count
+
+SELECT SUM(F.count*Q.count) as score 
+FROM frequency as F LEFT JOIN Q
+ON F.term=Q.term
+GROUP BY F.docid
+ORDER BY score DESC LIMIT 1
+
+6
