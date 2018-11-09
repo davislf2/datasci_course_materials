@@ -1,6 +1,6 @@
 import sys
 
-def hw():
+def hw(sent_file, tweet_file):
     print 'Hello, world!'
 
 def lines(fp):
@@ -9,7 +9,7 @@ def lines(fp):
 def main():
     sent_file = open(sys.argv[1])
     tweet_file = open(sys.argv[2])
-    hw()
+    hw(sent_file, tweet_file)
     lines(sent_file)
     lines(tweet_file)
 
