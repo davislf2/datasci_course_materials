@@ -3,7 +3,7 @@ frequency(docid, term, count)
 (a)
 σdocid=10398_txt_earn(frequency)
 
-SELECT DISTINCT COUNT (*) FROM frequency
+SELECT COUNT (*) FROM frequency
   WHERE docid="10398_txt_earn";
 
 138
@@ -24,7 +24,7 @@ SELECT COUNT(*) FROM (
 
 Sol2: Correct
 SELECT COUNT(*) FROM (
-  SELECT * FROM frequency
+  SELECT term FROM frequency
     WHERE docid="10398_txt_earn"
     AND count=1
 )x;
@@ -60,7 +60,7 @@ SELECT COUNT(*) FROM (
     AND count=1  
 )x;
 
-335
+324
 
 (d) count: Write a SQL statement to count the number of unique documents containing the word "law" or containing the word "legal" (If a document contains both law and legal, it should only be counted once)
 
@@ -117,9 +117,21 @@ SELECT SUM(A.value*B.value) FROM A JOIN B
   AND A.col_num = B.row_num
   WHERE A.row_num=2
 
+A               B
+0  1  2  3  4   0  1  2  3  4
+1               1        
+2  48 50 1      2        57
+3               3        24
+4               4
+
 2874
 
 (h) What to turn in: Create a file part_h.txt containing the similarity value of the two documents '10080_txt_crude' and '17035_txt_earn'. Upload this file as your answer.
+
+      t1 t2 t3 t4
+Doc1  2  1  1  3
+Doc2     1     2
+Sum      1     6 = 7
 
 
 CREATE VIEW Doc1 AS
@@ -136,6 +148,11 @@ ON Doc1.term=Doc2.term
 19
 
 (i) keyword search: Find the best matching document to the keyword query "washington taxes treasury". You can add this set of keywords to the document corpus with a union of scalar queries:
+
+docid, term, count
+q      was   1
+q
+q
 
 CREATE VIEW Q AS
 SELECT 'q' as docid, 'washington' as term, 1 as count 
