@@ -30,9 +30,9 @@ def mapper(record):
     # value: document contents
     key = record[0]
     value = record[1]
-    words = value.split()
-    for w in words:
-        mr.emit_intermediate(w, 1)
+    # words = value.split()
+    # for w in words:
+    mr.emit_intermediate(key, 1)
 
 
 def reducer(key, list_of_values):

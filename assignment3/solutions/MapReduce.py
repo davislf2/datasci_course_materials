@@ -13,7 +13,6 @@ class MapReduce:
 
     def emit(self, value):
         self.result.append(value)
-        # print self.result
 
     def execute(self, data, mapper, reducer):
         for line in data:
