@@ -18,21 +18,62 @@ import json
 import collections
 
 
-def happiest(tweet_file):
-    terms_dict = collections.defaultdict(int)
-    terms_count = 0
-    for line in tweet_file:
-        tweet = json.loads(line)
-        if 'text' in tweet:
-            text = tweet['text']
-            terms = text.split()
-            terms_count += len(terms)
-            for term in terms:
-                terms_dict[term] += 1
+def getScoresOfSentiment(sent_file):
+    scores = {}
+    len = 0
+    for line in sent_file:
+        term, score = line.split(
+            "\t")  # The file is tab-delimited. "\t" means "tab character"
+        scores[term] = int(score)  # Convert the score to an integer.
+        len += 1
+    return scores, len
 
-    for k, v in terms_dict.items():
-        if v != 0:
-            print "%s %.6f" % (k, float(v)/terms_count)
+
+def happiest(sent_file, tweet_file):
+    word_scores, len_sent = getScoresOfSentiment(sent_file)
+
+    count = 0
+    geo_score = collections.defaultdict(int)
+    highest_score = 0
+    happiest_state = None
+    # term_score = {}
+    for line in tweet_file:
+        if count < 10000000:
+            tweet = json.loads(line)
+            try:
+                # print json.dumps(tweet, indent=4, sort_keys=True)
+                # with open("results.json", "a") as f:
+                #     f.write(json.dumps(tweet, indent=4, sort_keys=True)+"\n")
+
+                tweet_score = 0
+                for word in tweet["text"].split(" "):
+                    if word in word_scores:
+                        tweet_score += word_scores[word]
+
+                place = tweet["place"]
+                if place and place["country_code"] == "US":
+                    full_name = place["full_name"]
+                    state = full_name.split()[-1]
+                    city = full_name.split()[0]
+                    geo_score[state] += tweet_score
+                    if geo_score[state] > highest_score:
+                        highest_score = geo_score[state]
+                        happiest_state = state
+
+            except:
+                pass
+        else:
+            break
+        count += 1
+
+    # term = ["{} {}".format(k.encode("utf-8"), v) for k, v in
+    #         geo_score.iteritems() if v != 0]
+    # for t in term:
+    #     print t
+
+    print happiest_state
+
+
 
 
 def main():

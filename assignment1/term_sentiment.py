@@ -3,6 +3,7 @@ import json
 import copy
 import collections
 
+
 def getScoresOfSentiment(sent_file):
     scores = {}
     len = 0
@@ -41,7 +42,6 @@ def hw(sent_file, tweet_file):
     # print(word_scores.items()) # Print every (term, score) pair in the dict
 
     count = 0
-
     # tweetScore(word_scores, tweet_file)
 
     term_score = collections.defaultdict(int)
