@@ -17,7 +17,6 @@ def hw(sent_file, tweet_file):
     # print(word_scores.items()) # Print every (term, score) pair in the dict
 
     count = 0
-    tweet_score = {}
     for line in tweet_file:
     #     if count < 100:
         tweet = json.loads(line)  # .decode("utf-8")
