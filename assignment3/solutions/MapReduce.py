@@ -26,3 +26,8 @@ class MapReduce:
         jenc = json.JSONEncoder()
         for item in self.result:
             print jenc.encode(item)
+
+        # with open("results.json", "w") as f:
+        #     for item in self.result:
+        #         print jenc.encode(item)
+        #         f.write(jenc.encode(item)+"\n")

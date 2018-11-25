@@ -31,6 +31,7 @@ def mapper(record):
     value = record
     if record[0] == 'a':
         for k in range(5):
+            # If it's a list, it will cause TypeError: unhashable type: 'list'
             key = (record[1], k)
             # print "a ", k, value
             mr.emit_intermediate(key, value)

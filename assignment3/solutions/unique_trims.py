@@ -36,7 +36,10 @@ def mapper(record):
 def reducer(key, list_of_values):
     # key: word
     # value: list of occurrence counts
-    mr.emit(list_of_values[0][:-10])
+    list_of_values = list_of_values[0][:-10]
+    if list_of_values not in mr.result:
+        print list_of_values
+        mr.emit(list_of_values)
 
 
 # Do not modify below this line
